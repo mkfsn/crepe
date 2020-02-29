@@ -15,6 +15,7 @@ type UnmarshalSuite struct {
 
 func (suite *UnmarshalSuite) TestSliceOfPtrToStruct() {
 	html := `
+		<table></table>
 		<table>
 			<tbody>
 			<tr data-id="aaaa" role="engineer">
@@ -32,12 +33,12 @@ func (suite *UnmarshalSuite) TestSliceOfPtrToStruct() {
 	`
 	var data struct {
 		Employees []*struct {
-			Id     string `crepe:",attr=data-id"`
+			Id     string `crepe:"attr=data-id"`
 			Name   string `crepe:"td,eq:0,text"`
 			Gender string `crepe:"td,eq:1,text"`
 			Age    int    `crepe:"td,eq:2,text"`
-			Role   string `crepe:",attr=role"`
-		} `crepe:"table>tbody>tr"`
+			Role   string `crepe:"attr=role"`
+		} `crepe:"table,eq:1,tbody>tr"`
 	}
 
 	err := crepe.Unmarshal([]byte(html), &data)

@@ -9,7 +9,10 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-const tagName = "crepe"
+const (
+	tagName     = "crepe"
+	tagSplitter = ","
+)
 
 func Unmarshal(b []byte, i interface{}) error {
 	reader := bytes.NewReader(b)
@@ -99,11 +102,11 @@ func unmarshalSlice(s *goquery.Selection, rValueOf reflect.Value, rField reflect
 		return ErrUnexportedField
 	}
 
-	statement, err := newDecoderFromTag(tag)
+	decoder, err := newDecoderFromTag(tag)
 	if err != nil {
 		return fmt.Errorf("failed to parse tag: %w", err)
 	}
-	s = statement.Delegate(s)
+	s = decoder.Query(s)
 
 	slice := reflect.MakeSlice(rValueOf.Type(), rValueOf.Len(), rValueOf.Cap())
 	for i := 0; i < s.Length(); i++ {
@@ -138,12 +141,12 @@ func unmarshalPrimitive(s *goquery.Selection, rValueOf reflect.Value, rField ref
 		return ErrUnexportedField
 	}
 
-	statement, err := newDecoderFromTag(tag)
+	decoder, err := newDecoderFromTag(tag)
 	if err != nil {
 		return fmt.Errorf("failed to parse tag: %w", err)
 	}
 
-	result, err := statement.Decode(s)
+	result, err := decoder.Decode(s)
 	if err != nil {
 		return err
 	}

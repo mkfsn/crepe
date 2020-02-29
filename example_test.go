@@ -10,6 +10,7 @@ func ExampleUnmarshal() {
 		<div id="header">
 			<h1>Employees</h1>
 		</div>
+		<table></table>
 		<table>
 			<tbody>
 			<tr data-id="aaaa" role="engineer">
@@ -28,12 +29,12 @@ func ExampleUnmarshal() {
 	var data struct {
 		Title     string `crepe:"div#header>h1,text"`
 		Employees []*struct {
-			Id     string `crepe:",attr=data-id"`
+			Id     string `crepe:"attr=data-id"`
 			Name   string `crepe:"td,eq:0,text"`
 			Gender string `crepe:"td,eq:1,text"`
 			Age    int    `crepe:"td,eq:2,text"`
-			Role   string `crepe:",attr=role"`
-		} `crepe:"table>tbody>tr"`
+			Role   string `crepe:"attr=role"`
+		} `crepe:"table,eq:1,tbody>tr"`
 	}
 	if err := Unmarshal([]byte(html), &data); err != nil {
 		fmt.Printf("error: %v\n", err)

@@ -7,8 +7,9 @@ import (
 var (
 	ErrInvalidValue    = errors.New("invalid value")
 	ErrUnexportedField = errors.New("unexported field")
-	ErrInvalidTag      = errors.New("invalid tag")
+	ErrEmptyTag        = errors.New("empty tag")
 	ErrUnknownAction   = errors.New("unknown action")
+	ErrUnknownTarget   = errors.New("unknown target")
 	ErrUnimplemented   = errors.New("unimplemented")
 	ErrUnsupportedType = errors.New("unsupported type")
 )
