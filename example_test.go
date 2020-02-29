@@ -10,7 +10,6 @@ func ExampleUnmarshal() {
 		<div id="header">
 			<h1>Employees</h1>
 		</div>
-		<table></table>
 		<table>
 			<tbody>
 			<tr data-id="aaaa" role="engineer">
@@ -34,7 +33,7 @@ func ExampleUnmarshal() {
 			Gender string `crepe:"td,eq:1,text"`
 			Age    int    `crepe:"td,eq:2,text"`
 			Role   string `crepe:",attr=role"`
-		} `crepe:"table>tbody>tr,eq:1"`
+		} `crepe:"table>tbody>tr"`
 	}
 	if err := Unmarshal([]byte(html), &data); err != nil {
 		fmt.Printf("error: %v\n", err)
