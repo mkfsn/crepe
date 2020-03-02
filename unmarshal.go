@@ -110,30 +110,24 @@ func unmarshalSlice(s *goquery.Selection, rValueOf reflect.Value, rField reflect
 
 	slice := reflect.MakeSlice(rValueOf.Type(), rValueOf.Len(), rValueOf.Cap())
 
-	s.EachWithBreak(func(i int, s *goquery.Selection) bool {
+	for i := 0; i < s.Length(); i++ {
 		var elem reflect.Value
 		switch typ := rValueOf.Type().Elem(); typ.Kind() {
 		case reflect.Ptr:
 			elem = reflect.New(typ.Elem())
-			if err = unmarshalStruct(s, elem.Elem()); err != nil {
-				return false
+			if err := unmarshalStruct(s.Eq(i), elem.Elem()); err != nil {
+				return err
 			}
 		case reflect.Struct:
 			elem = reflect.New(typ).Elem()
-			if err = unmarshalStruct(s, elem); err != nil {
-				return false
+			if err := unmarshalStruct(s.Eq(i), elem); err != nil {
+				return err
 			}
 		default:
-			err = ErrUnsupportedType
-			return false
+			return ErrUnsupportedType
 		}
 		slice = reflect.Append(slice, elem)
-		return true
-	})
-	if err != nil {
-		return err
 	}
-
 	rValueOf.Set(slice)
 	return nil
 }
