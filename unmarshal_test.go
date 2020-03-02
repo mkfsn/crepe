@@ -46,7 +46,7 @@ func (suite *UnmarshalSuite) TestSliceOfPtrToStruct() {
 
 	b, err := json.Marshal(data)
 	suite.Require().NoError(err)
-	suite.Require().Equal(`{"Employees":[{"Id":"aaaa","Name":"Tony","Gender":"Male","Age":20,"Role":"engineer"},{"Id":"aaaa","Name":"Tony","Gender":"Male","Age":20,"Role":"engineer"}]}`, string(b))
+	suite.Require().Equal(`{"Employees":[{"Id":"aaaa","Name":"Tony","Gender":"Male","Age":20,"Role":"engineer"},{"Id":"bbbb","Name":"Mary","Gender":"Female","Age":23,"Role":"manager"}]}`, string(b))
 }
 
 func TestUnmarshal(t *testing.T) {
