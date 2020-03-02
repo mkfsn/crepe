@@ -15,8 +15,12 @@ type queryer interface {
 
 func newQueryer(selector string) (queryer, error) {
 	switch {
-	case strings.HasPrefix(selector, "eq:"):
+	case strings.HasPrefix(selector, ":eq"):
 		return newEqualQueryer(selector)
+	case strings.HasPrefix(selector, ":first"):
+		return newFirstQueryer(), nil
+	case strings.HasPrefix(selector, ":last"):
+		return newLastQueryer(), nil
 	}
 	return newBasicQueryer(selector), nil
 }
@@ -43,7 +47,7 @@ type equalQueryer struct {
 
 func newEqualQueryer(selector string) (*equalQueryer, error) {
 	var number int
-	if _, err := fmt.Sscanf(selector, "eq:%d", &number); err != nil {
+	if _, err := fmt.Sscanf(selector, ":eq(%d)", &number); err != nil {
 		return nil, err
 	}
 	return &equalQueryer{number: number}, nil
@@ -55,4 +59,24 @@ func (q *equalQueryer) query(selection Selector) *goquery.Selection {
 
 func (q *equalQueryer) String() string {
 	return fmt.Sprintf("equalQueryer{eq:%d}", q.number)
+}
+
+type firstQueryer struct{}
+
+func newFirstQueryer() *firstQueryer {
+	return &firstQueryer{}
+}
+
+func (q *firstQueryer) query(selection Selector) *goquery.Selection {
+	return selection.First()
+}
+
+type lastQueryer struct{}
+
+func newLastQueryer() *lastQueryer {
+	return &lastQueryer{}
+}
+
+func (q *lastQueryer) query(selection Selector) *goquery.Selection {
+	return selection.Last()
 }

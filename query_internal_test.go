@@ -29,9 +29,23 @@ func (suite *QuerySuite) TestQueryers() {
 		},
 		{
 			name:      "equal queryer",
-			selectors: []string{"eq:3"},
+			selectors: []string{":eq(3)"},
 			expectedQueryers: []queryer{
 				&equalQueryer{number: 3},
+			},
+		},
+		{
+			name:      "first queryer",
+			selectors: []string{":first"},
+			expectedQueryers: []queryer{
+				&firstQueryer{},
+			},
+		},
+		{
+			name:      "last queryer",
+			selectors: []string{":last"},
+			expectedQueryers: []queryer{
+				&lastQueryer{},
 			},
 		},
 	}
