@@ -34,11 +34,11 @@ By specifying some selectors in struct tags, crepe helps you unmarshal the data 
 		Title     string `crepe:"div#header>h1,text"`
 		Employees []*struct {
 			Id     string `crepe:"attr=data-id"`
-			Name   string `crepe:"td,eq:0,text"`
-			Gender string `crepe:"td,eq:1,text"`
-			Age    int    `crepe:"td,eq:2,text"`
+			Name   string `crepe:"td,:eq(0),text"`
+			Gender string `crepe:"td,:eq(1),text"`
+			Age    int    `crepe:"td,:eq(2),text"`
 			Role   string `crepe:"attr=role"`
-		} `crepe:"table,eq:1,tbody>tr"`
+		} `crepe:"table,:last,tbody>tr"`
 	}
 	if err := Unmarshal([]byte(html), &data); err != nil {
 		fmt.Printf("error: %v\n", err)
