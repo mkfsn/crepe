@@ -2,6 +2,9 @@ package crepe_test
 
 import (
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/mkfsn/crepe"
@@ -14,23 +17,7 @@ type UnmarshalSuite struct {
 }
 
 func (suite *UnmarshalSuite) TestFirstQuery() {
-	html := `
-		<table></table>
-		<table>
-			<tbody>
-			<tr data-id="aaaa" role="engineer">
-				<td>Tony</td>
-				<td>Male</td>
-				<td>20</td>
-			</tr>
-			<tr data-id="bbbb" role="manager">
-				<td>Mary</td>
-				<td>Female</td>
-				<td>23</td>
-			</tr>
-			</tbody>
-		</table>
-	`
+	html := suite.loadHTML("page1.html")
 	var data struct {
 		Employees []*struct {
 			Id     string `crepe:"attr=data-id"`
@@ -49,23 +36,7 @@ func (suite *UnmarshalSuite) TestFirstQuery() {
 }
 
 func (suite *UnmarshalSuite) TestLastQuery() {
-	html := `
-		<table></table>
-		<table>
-			<tbody>
-			<tr data-id="aaaa" role="engineer">
-				<td>Tony</td>
-				<td>Male</td>
-				<td>20</td>
-			</tr>
-			<tr data-id="bbbb" role="manager">
-				<td>Mary</td>
-				<td>Female</td>
-				<td>23</td>
-			</tr>
-			</tbody>
-		</table>
-	`
+	html := suite.loadHTML("page1.html")
 	var data struct {
 		Employees []*struct {
 			Id     string `crepe:"attr=data-id"`
@@ -84,23 +55,7 @@ func (suite *UnmarshalSuite) TestLastQuery() {
 }
 
 func (suite *UnmarshalSuite) TestSliceOfPtrToStruct() {
-	html := `
-		<table></table>
-		<table>
-			<tbody>
-			<tr data-id="aaaa" role="engineer">
-				<td>Tony</td>
-				<td>Male</td>
-				<td>20</td>
-			</tr>
-			<tr data-id="bbbb" role="manager">
-				<td>Mary</td>
-				<td>Female</td>
-				<td>23</td>
-			</tr>
-			</tbody>
-		</table>
-	`
+	html := suite.loadHTML("page1.html")
 	var data struct {
 		Employees []*struct {
 			Id     string `crepe:"attr=data-id"`
@@ -116,6 +71,16 @@ func (suite *UnmarshalSuite) TestSliceOfPtrToStruct() {
 	b, err := json.Marshal(data)
 	suite.Require().NoError(err)
 	suite.Require().Equal(`{"Employees":[{"Id":"aaaa","Name":"Tony","Gender":"Male","Age":20,"Role":"engineer"},{"Id":"bbbb","Name":"Mary","Gender":"Female","Age":23,"Role":"manager"}]}`, string(b))
+}
+
+func (suite *UnmarshalSuite) loadHTML(filename string) []byte {
+	f, err := os.Open(fmt.Sprintf("./testdata/%s", filename))
+	suite.Require().NoError(err)
+
+	b, err := ioutil.ReadAll(f)
+	suite.Require().NoError(err)
+
+	return b
 }
 
 func TestUnmarshal(t *testing.T) {
