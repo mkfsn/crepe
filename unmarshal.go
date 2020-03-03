@@ -7,11 +7,12 @@ import (
 	"strconv"
 
 	"github.com/PuerkitoBio/goquery"
+
+	"github.com/mkfsn/crepe/internal"
 )
 
 const (
-	tagName     = "crepe"
-	tagSplitter = ","
+	tagName = "crepe"
 )
 
 func Unmarshal(b []byte, i interface{}) error {
@@ -102,11 +103,11 @@ func unmarshalSlice(s *goquery.Selection, rValueOf reflect.Value, rField reflect
 		return ErrUnexportedField
 	}
 
-	decoder, err := newDecoderFromTag(tag)
+	decoder, err := internal.NewSelectResolver(tag)
 	if err != nil {
 		return fmt.Errorf("failed to parse tag: %w", err)
 	}
-	s = decoder.Query(s)
+	s = decoder.Select(s)
 
 	slice := reflect.MakeSlice(rValueOf.Type(), rValueOf.Len(), rValueOf.Cap())
 
@@ -142,45 +143,45 @@ func unmarshalPrimitive(s *goquery.Selection, rValueOf reflect.Value, rField ref
 		return ErrUnexportedField
 	}
 
-	decoder, err := newDecoderFromTag(tag)
+	selector, err := internal.NewSelectResolver(tag)
 	if err != nil {
 		return fmt.Errorf("failed to parse tag: %w", err)
 	}
 
-	result, err := decoder.Decode(s)
+	result, err := selector.Resolve(s)
 	if err != nil {
 		return err
 	}
 
 	switch rField.Type.Kind() {
 	case reflect.String:
-		rValueOf.SetString(result.raw)
+		rValueOf.SetString(result.Raw)
 
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-		v, err := strconv.ParseInt(result.raw, 0, 64)
+		v, err := strconv.ParseInt(result.Raw, 0, 64)
 		if err != nil {
-			return fmt.Errorf("failed to parse %v: %w", result.raw, err)
+			return fmt.Errorf("failed to parse %v: %w", result.Raw, err)
 		}
 		rValueOf.SetInt(v)
 
 	case reflect.Float32, reflect.Float64:
-		v, err := strconv.ParseFloat(result.raw, 64)
+		v, err := strconv.ParseFloat(result.Raw, 64)
 		if err != nil {
-			return fmt.Errorf("failed to parse %v: %w", result.raw, err)
+			return fmt.Errorf("failed to parse %v: %w", result.Raw, err)
 		}
 		rValueOf.SetFloat(v)
 
 	case reflect.Bool:
-		v, err := strconv.ParseBool(result.raw)
+		v, err := strconv.ParseBool(result.Raw)
 		if err != nil {
-			return fmt.Errorf("failed to parse %v: %w", result.raw, err)
+			return fmt.Errorf("failed to parse %v: %w", result.Raw, err)
 		}
 		rValueOf.SetBool(v)
 
 	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-		v, err := strconv.ParseUint(result.raw, 0, 64)
+		v, err := strconv.ParseUint(result.Raw, 0, 64)
 		if err != nil {
-			return fmt.Errorf("failed to parse %v: %w", result.raw, err)
+			return fmt.Errorf("failed to parse %v: %w", result.Raw, err)
 		}
 		rValueOf.SetUint(v)
 
