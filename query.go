@@ -7,10 +7,8 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-type Selector = *goquery.Selection
-
 type queryer interface {
-	query(Selector) *goquery.Selection
+	query(*goquery.Selection) *goquery.Selection
 }
 
 func newQueryer(selector string) (queryer, error) {
@@ -37,7 +35,7 @@ func (q *basicQueryer) String() string {
 	return fmt.Sprintf("basicQueryer{selector:%q}", q.selector)
 }
 
-func (q *basicQueryer) query(selection Selector) *goquery.Selection {
+func (q *basicQueryer) query(selection *goquery.Selection) *goquery.Selection {
 	return selection.Find(q.selector)
 }
 
@@ -53,7 +51,7 @@ func newEqualQueryer(selector string) (*equalQueryer, error) {
 	return &equalQueryer{number: number}, nil
 }
 
-func (q *equalQueryer) query(selection Selector) *goquery.Selection {
+func (q *equalQueryer) query(selection *goquery.Selection) *goquery.Selection {
 	return selection.Eq(q.number)
 }
 
@@ -67,7 +65,7 @@ func newFirstQueryer() *firstQueryer {
 	return &firstQueryer{}
 }
 
-func (q *firstQueryer) query(selection Selector) *goquery.Selection {
+func (q *firstQueryer) query(selection *goquery.Selection) *goquery.Selection {
 	return selection.First()
 }
 
@@ -77,6 +75,6 @@ func newLastQueryer() *lastQueryer {
 	return &lastQueryer{}
 }
 
-func (q *lastQueryer) query(selection Selector) *goquery.Selection {
+func (q *lastQueryer) query(selection *goquery.Selection) *goquery.Selection {
 	return selection.Last()
 }
