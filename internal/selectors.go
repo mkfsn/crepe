@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"errors"
 	"fmt"
 	"strings"
 
@@ -35,7 +34,7 @@ func (c *chainSelector) Select(s *goquery.Selection) *goquery.Selection {
 
 func (c *chainSelector) Resolve(s *goquery.Selection) (*Result, error) {
 	if c.resolver == nil {
-		return nil, errors.New("nothing to resolve")
+		return nil, ErrNoResolver
 	}
 	s = c.Select(s)
 	return c.resolver.Resolve(s)
