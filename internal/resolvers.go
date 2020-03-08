@@ -32,7 +32,7 @@ type htmlResolver struct{}
 
 func (r *htmlResolver) Resolve(s *goquery.Selection) (*Result, error) {
 	html, err := s.Html()
-	return &Result{Raw: html}, err
+	return &Result{Raw: html, Ok: err == nil}, err
 }
 
 type textResolver struct{}
